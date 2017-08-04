@@ -60,11 +60,15 @@ body {
 .chat-box-header,
 .chat-msg.bot>.msg-avatar {
     /*red*/
-    background-image: linear-gradient( to top right, rgba(246, 72, 72, 1), rgba(250, 65, 95, 1));
+    /*background-image: linear-gradient( to top right, rgba(246, 72, 72, 1), rgba(250, 65, 95, 1));*/
     /*pink-blue*/
     /*background-image: linear-gradient( to top left, rgba(252, 123, 123, 1), rgba(166, 193, 255, 1));*/
     /*pink-red*/
     background-image: linear-gradient( to bottom right, rgba(240, 149, 255, 1), rgba(246, 72, 72, 1));
+}
+
+.options-btn {
+    border: 1px solid rgba(240, 149, 255, 1);
 }
 
 
@@ -358,6 +362,18 @@ body {
     position: relative;
     margin-bottom: 20px;
     border-radius: 3px;
+}
+
+.options-btn {
+    background: white;
+    padding: 10px 15px 10px 15px;
+    color: #666;
+    width: 75%;
+    margin-left: 55px;
+    position: relative;
+    margin-bottom: 20px;
+    border-radius: 3px;
+    text-align: center;
 }
 
 .chat-msg {

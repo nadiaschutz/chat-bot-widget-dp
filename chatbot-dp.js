@@ -14,17 +14,19 @@ $(function () {
     const TOP_THRESHOLD = 0.9;
     const BOTTOM_THRESHOLD = 0.6;
 
-    var lastmsg = "";
-    var lastcrm = "";
+    /*  var lastmsg = "";
+    var lastcrm = "";*/
 
     var msg = "";
-    var bot_msg;
+    var bot_msg, didYouMean, botScore;
+    var options = [];
 
     function callbot(message) {
 
 
         /*var endpoint = url + "/webapi?dpid=" + "DPID2110030512812706336545" + "&phrase=" + encodeURIComponent(message) + "&channel=" + sessionkey + "&threshold=" + TOP_THRESHOLD;*/
-        var endpoint = url + "/webapi?dpid=" + DPID + "&phrase=" + encodeURIComponent(message) + "&channel=" + sessionkey + "&threshold=" + TOP_THRESHOLD;
+        /*var endpoint = url + "/webapi?dpid=" + DPID + "&phrase=" + encodeURIComponent(message) + "&channel=" + sessionkey + "&threshold=" + TOP_THRESHOLD;*/
+        var endpoint = url + '/webapi?dpid=' + DPID + '&phrase=' + encodeURIComponent(message) + '&channel=' + sessionkey + '&threshold=' + TOP_THRESHOLD + '&threshlow=' + BOTTOM_THRESHOLD;
 
         console.log('url: ' + endpoint);
 
@@ -40,11 +42,55 @@ $(function () {
                 console.log("Bot responded with: ");
                 console.log(response);
                 //Query the jQuery object for the values
+
                 bot_msg = response.data.response;
+                bot_score = response.data.score;
+                /*botScore = response.data.score;*/
+                /*didYouMean = function () {
+                    if (botScore < TOP_THRESHOLD && botScore > BOTTOM_THRESHOLD) {
+                        var i;
+                        var botMatches = response.data.matches;
+                        for (i = 0; i < botMatches.length; i++) {
+                            console.log(botMatches[i].match);
+                        }
+                    }
+                }();
+                
+                
+*/
+
                 console.log(bot_msg);
+                console.log(bot_score);
 
-                generate_message(bot_msg, 'bot');
 
+                /*generate_message(bot_msg, 'bot');*/
+
+                if (bot_score > TOP_THRESHOLD || bot_score < BOTTOM_THRESHOLD ) {
+
+                    generate_message(bot_msg, 'bot');
+                } else if (bot_score < TOP_THRESHOLD && bot_score > BOTTOM_THRESHOLD ) {
+                    var botMatches = response.data.matches;
+
+                    if (botMatches || botMatches.length > 0) {
+
+                        /*var i = 0;
+                        while (i < matches.length && matches[i].score > BOTTOM_THRESHOLD) {
+                            options.push(matches[i++].match);
+                            console.log(matches[i].match);
+                        }*/
+                        
+                            var i;
+                            var botMatches = response.data.matches;
+                            for (i = 0; i < botMatches.length; i++) {
+                                console.log(botMatches[i].match);
+                                options.push(botMatches[i].match);
+                            }
+                        
+
+                        generate_options(options);
+                    }
+
+                }
 
 
             },
@@ -63,18 +109,18 @@ $(function () {
 
 
 
-    function callCrm(message) {
+    //function callCrm(message) {
 
-        /* lastcrm = message;*/
-
-
-        //var phrase = getLastHistory();
-        var endpoint = url + "/crmapi?dpid=" + DPID + "&phrase=" + encodeURIComponent(message) + "&channel=" + sessionkey + "&threshold=" + TOP_THRESHOLD;
+    /* lastcrm = message;*/
 
 
-        console.log('callCrm url: ' + endpoint);
+    //var phrase = getLastHistory();
+    //var endpoint = url + "/crmapi?dpid=" + DPID + "&phrase=" + encodeURIComponent(message) + "&channel=" + sessionkey + "&threshold=" + TOP_THRESHOLD;
 
-        $.ajax({
+
+    //console.log('callCrm url: ' + endpoint);
+
+    /*$.ajax({
             type: "get",
             async: false,
             url: endpoint,
@@ -90,27 +136,27 @@ $(function () {
                 console.log(response);
 
 
-
-                // if($status){
-                //     $status.removeClass(fa_loading).addClass("success").addClass(fa_success);
-                // }
-                /* toggleLoader(false);
+*/
+    // if($status){
+    //     $status.removeClass(fa_loading).addClass("success").addClass(fa_success);
+    // }
+    /* toggleLoader(false);
  toggleChatMenu(false);
  addPixelMessage(response.data);*/
-            },
-            error: function (response) {
-                console.log(response);
-                var pixelResponse = {
-                    score: 1,
-                    match: 'Service Status',
-                    response: 'The service is currently unavaliable ',
-                    matchId: 0,
-                };
+    /*},
+error: function (response) {
+console.log(response);
+var pixelResponse = {
+    score: 1,
+    match: 'Service Status',
+    response: 'The service is currently unavaliable ',
+    matchId: 0,
+};
 
-                addPixelMessage(pixelResponse, true);
-            }
-        });
-    }
+addPixelMessage(pixelResponse, true);
+}
+});
+}*/
 
 
 
@@ -126,31 +172,18 @@ $(function () {
         }
         //call generate message function
         generate_message(msg, 'self');
-        /*var buttons = [
-    {
-        name: 'Existing User',
-        value: 'existing'
-        },
-    {
-        name: 'New User',
-        value: 'new'
-        }
-      ];*/
         //send the message to bot
-
-        callCrm(msg);
         callbot(msg);
 
         // bot answering back
-
-
         /*setTimeout(function () {
             generate_message(msg, 'bot');
             //time out animation for the bot answering back
         }, 1000)*/
 
     })
-
+    
+      
 
 
 
@@ -170,11 +203,6 @@ $(function () {
             str += "<span class=\"msg-avatar\">";
             /*str += "<i class=\"material-icons\">android<\/i>"*/
             str += "<img class=\"chat-box-overlay_robot\" src=\"ROBOT.png\">"
-
-
-
-
-
             str += "          <\/span>";
             str += "          <div class=\"cm-msg-text\">";
             str += msg;
@@ -199,6 +227,46 @@ $(function () {
         }, 1000);
     }
 
+    function generate_options(options) {
+        generate_message('Did you mean:', 'bot');
+
+        var str = "";
+        var i;
+        for (i = 0; i < options.length; i++) {
+            INDEX++;
+            
+            str = "<div id='cm-msg-" + INDEX + "' class=\"options\">";
+            str += "<button class=\"options-btn\" >";
+            str += options[i];
+            str += "          <\/button>";
+            str += "        <\/div>";
+
+            //$(".chat-logs").append(str);
+            /*$('#' + hash).off("click").click(function () {
+                callbot(opt);
+            });*/
+            
+             //send the string to chat-log window
+            $(".chat-logs").append(str);
+            //message animation to show up on the screen with 500mls delay
+            $("#cm-msg-" + INDEX).hide().fadeIn(500);
+            }
+        //choose button option
+            $(".options-btn").click(function(e){
+                e.preventDefault();
+                var btnVal=$(this).html();
+                console.log(btnVal);
+                //show chosen option in the chat logs
+                $(".chat-logs").append(function(){
+                    generate_message(btnVal, 'self');
+                    callbot(btnVal);
+                });
+                });
+
+        }
+
+
+
     function guid() {
 
         return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
@@ -222,19 +290,19 @@ $(function () {
 
 
     /*toggle animations*/
-    $("#chat-circle").click(function () {
+    $("#chat-circle").click(function() {
         $("#chat-circle").hide('scale');
         $(".chat-box").show('scale');
         $(".chat-box-welcome__header").show('scale');
     })
 
-    $(".chat-box-toggle").click(function () {
+    $(".chat-box-toggle").click(function() {
         $("#chat-circle").show('scale');
         $(".chat-box").hide('scale');
         $(".chat-box-welcome__header").hide('scale');
         $("#chat-box__wraper").hide('scale');
-    })
-    $(".chat-input__text").click(function () {
+    }) 
+    $(".chat-input__text").click(function() {
         $(".chat-box-welcome__header").hide();
         $("#chat-box__wraper").show();
     })

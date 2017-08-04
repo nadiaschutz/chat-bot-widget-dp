@@ -93,8 +93,12 @@ $(function () {
                                 console.log(botMatches[i].match);
                                 options.push(botMatches[i].match);
                             }
+                        
                         optionMsg(options);
+                        options=[];
                     }
+                    
+                    
                 }
             },
             error: function (response) {
@@ -176,6 +180,7 @@ $(function () {
     }
 
     var optionMsg=function generate_options(b) {
+        /*what is the weather like in toronto now*/
 
             generate_message('Did you mean:', 'bot');
 
@@ -208,8 +213,9 @@ $(function () {
                     callbot(btnVal);
                 });
                 });
-            b.length=0;
-           /* }*/
+        /*b.length=0;*/
+            b=[];
+           
         
 
         }
@@ -234,8 +240,6 @@ $(function () {
         return sessionkey;
     }
 
-
-
     /*toggle animations*/
     $("#chat-circle").click(function() {
         $("#chat-circle").hide('scale');
@@ -253,5 +257,6 @@ $(function () {
         $(".chat-box-welcome__header").hide();
         $("#chat-box__wraper").show();
     })
+    
 
 })

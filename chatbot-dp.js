@@ -37,6 +37,15 @@ $(function () {
             dataType: "jsonp",
             //jsonp: "jsonCallback",
             //jsonpCallback: "jsonCallback",
+            beforeSend: function() {
+               
+                
+                $(".spin-container").show();
+                
+            },
+            complete: function() {
+              $(".spin-container").hide();
+            },
             success: function (response) {
 
                 console.log("Bot responded with: ");
@@ -264,6 +273,14 @@ addPixelMessage(pixelResponse, true);
                 });
 
         }
+  /*  function loader(){
+         var str;
+                str += "<div class='spiner'>";
+            str += "<div aria-hidden=\"true\"><\/div>";
+            str += "<div aria-hidden=\"true\"><\/div>";
+            str += "<div aria-hidden=\"true\"><\/div>";
+            str += "        <\/div>";
+    }*/
 
 
 

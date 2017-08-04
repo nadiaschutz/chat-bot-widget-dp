@@ -28,7 +28,7 @@ $(function () {
         /*var endpoint = url + "/webapi?dpid=" + DPID + "&phrase=" + encodeURIComponent(message) + "&channel=" + sessionkey + "&threshold=" + TOP_THRESHOLD;*/
         var endpoint = url + '/webapi?dpid=' + DPID + '&phrase=' + encodeURIComponent(message) + '&channel=' + sessionkey + '&threshold=' + TOP_THRESHOLD + '&threshlow=' + BOTTOM_THRESHOLD;
 
-        console.log('url: ' + endpoint);
+       /* console.log('url: ' + endpoint);*/
 
         $.ajax({
             type: "get",
@@ -87,21 +87,15 @@ $(function () {
                             options.push(matches[i++].match);
                             console.log(matches[i].match);
                         }*/
-                        
                             var i;
                             var botMatches = response.data.matches;
                             for (i = 0; i < botMatches.length; i++) {
                                 console.log(botMatches[i].match);
                                 options.push(botMatches[i].match);
                             }
-                        
-
-                        generate_options(options);
+                        optionMsg(options);
                     }
-
                 }
-
-
             },
             error: function (response) {
                 console.log(response);
@@ -115,57 +109,6 @@ $(function () {
             }
         });
     }
-
-
-
-    //function callCrm(message) {
-
-    /* lastcrm = message;*/
-
-
-    //var phrase = getLastHistory();
-    //var endpoint = url + "/crmapi?dpid=" + DPID + "&phrase=" + encodeURIComponent(message) + "&channel=" + sessionkey + "&threshold=" + TOP_THRESHOLD;
-
-
-    //console.log('callCrm url: ' + endpoint);
-
-    /*$.ajax({
-            type: "get",
-            async: false,
-            url: endpoint,
-            dataType: "jsonp",
-            //jsonp: "jsonCallback",
-            //jsonpCallback: "jsonCallback",
-            success: function (response) {
-
-
-
-
-                console.log("Bot Crm msg: ");
-                console.log(response);
-
-
-*/
-    // if($status){
-    //     $status.removeClass(fa_loading).addClass("success").addClass(fa_success);
-    // }
-    /* toggleLoader(false);
- toggleChatMenu(false);
- addPixelMessage(response.data);*/
-    /*},
-error: function (response) {
-console.log(response);
-var pixelResponse = {
-    score: 1,
-    match: 'Service Status',
-    response: 'The service is currently unavaliable ',
-    matchId: 0,
-};
-
-addPixelMessage(pixelResponse, true);
-}
-});
-}*/
 
 
 
@@ -192,10 +135,6 @@ addPixelMessage(pixelResponse, true);
 
     })
     
-      
-
-
-
     function generate_message(msg, type) {
         //var index is the id of each message id =id+1
         INDEX++;
@@ -236,53 +175,44 @@ addPixelMessage(pixelResponse, true);
         }, 1000);
     }
 
-    function generate_options(options) {
-        generate_message('Did you mean:', 'bot');
+    var optionMsg=function generate_options(b) {
 
-        var str = "";
-        var i;
-        for (i = 0; i < options.length; i++) {
+            generate_message('Did you mean:', 'bot');
+
+            var str = "";
+            var i;
+            for (i = 0; i < b.length; i++) {
             INDEX++;
             
             str = "<div id='cm-msg-" + INDEX + "' class=\"options\">";
             str += "<button class=\"options-btn\" >";
-            str += options[i];
+            str += b[i];
             str += "          <\/button>";
             str += "        <\/div>";
-
-            //$(".chat-logs").append(str);
-            /*$('#' + hash).off("click").click(function () {
-                callbot(opt);
-            });*/
             
              //send the string to chat-log window
             $(".chat-logs").append(str);
             //message animation to show up on the screen with 500mls delay
             $("#cm-msg-" + INDEX).hide().fadeIn(500);
+             console.log(b[i]);
             }
-        //choose button option
+            //choose button option
             $(".options-btn").click(function(e){
                 e.preventDefault();
                 var btnVal=$(this).html();
                 console.log(btnVal);
                 //show chosen option in the chat logs
                 $(".chat-logs").append(function(){
+               
                     generate_message(btnVal, 'self');
                     callbot(btnVal);
                 });
                 });
+            b.length=0;
+           /* }*/
+        
 
         }
-  /*  function loader(){
-         var str;
-                str += "<div class='spiner'>";
-            str += "<div aria-hidden=\"true\"><\/div>";
-            str += "<div aria-hidden=\"true\"><\/div>";
-            str += "<div aria-hidden=\"true\"><\/div>";
-            str += "        <\/div>";
-    }*/
-
-
 
     function guid() {
 

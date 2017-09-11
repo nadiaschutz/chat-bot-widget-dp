@@ -23,28 +23,26 @@ $(function () {
 
     function callbot(message) {
 
-
-        /*var endpoint = url + "/webapi?dpid=" + "DPID2110030512812706336545" + "&phrase=" + encodeURIComponent(message) + "&channel=" + sessionkey + "&threshold=" + TOP_THRESHOLD;*/
-        /*var endpoint = url + "/webapi?dpid=" + DPID + "&phrase=" + encodeURIComponent(message) + "&channel=" + sessionkey + "&threshold=" + TOP_THRESHOLD;*/
         var endpoint = url + '/webapi?dpid=' + DPID + '&phrase=' + encodeURIComponent(message) + '&channel=' + sessionkey + '&threshold=' + TOP_THRESHOLD + '&threshlow=' + BOTTOM_THRESHOLD;
+        /*var endpoint = url + '/webapi?dpid=' + DPID + '&channel=' + sessionkey + '&threshold=' + TOP_THRESHOLD + '&threshlow=' + BOTTOM_THRESHOLD + '&phrase=' + encodeURIComponent(message) + 'deeppixel&callback=';*/
 
-       /* console.log('url: ' + endpoint);*/
+
+        console.log(endpoint);
+
+        /* console.log('url: ' + endpoint);*/
 
         $.ajax({
             type: "get",
-            async: false,
+            /*async: false,*/
             url: endpoint,
             dataType: "jsonp",
-            //jsonp: "jsonCallback",
+            jsonp: "jsonCallback",
             //jsonpCallback: "jsonCallback",
-            beforeSend: function() {
-               
-                
+            beforeSend: function () {
                 $(".spin-container").show();
-                
             },
-            complete: function() {
-              $(".spin-container").hide();
+            complete: function () {
+                $(".spin-container").hide();
             },
             success: function (response) {
 
@@ -74,10 +72,10 @@ $(function () {
 
                 /*generate_message(bot_msg, 'bot');*/
 
-                if (bot_score > TOP_THRESHOLD || bot_score < BOTTOM_THRESHOLD ) {
+                if (bot_score > TOP_THRESHOLD || bot_score < BOTTOM_THRESHOLD) {
 
                     generate_message(bot_msg, 'bot');
-                } else if (bot_score < TOP_THRESHOLD && bot_score > BOTTOM_THRESHOLD ) {
+                } else if (bot_score < TOP_THRESHOLD && bot_score > BOTTOM_THRESHOLD) {
                     var botMatches = response.data.matches;
 
                     if (botMatches || botMatches.length > 0) {
@@ -87,18 +85,18 @@ $(function () {
                             options.push(matches[i++].match);
                             console.log(matches[i].match);
                         }*/
-                            var i;
-                            var botMatches = response.data.matches;
-                            for (i = 0; i < botMatches.length; i++) {
-                                console.log(botMatches[i].match);
-                                options.push(botMatches[i].match);
-                            }
-                        
+                        var i;
+                        var botMatches = response.data.matches;
+                        for (i = 0; i < botMatches.length; i++) {
+                            console.log(botMatches[i].match);
+                            options.push(botMatches[i].match);
+                        }
+
                         optionMsg(options);
-                        options=[];
+                        options = [];
                     }
-                    
-                    
+
+
                 }
             },
             error: function (response) {
@@ -138,7 +136,7 @@ $(function () {
         }, 1000)*/
 
     })
-    
+
     function generate_message(msg, type) {
         //var index is the id of each message id =id+1
         INDEX++;
@@ -179,46 +177,46 @@ $(function () {
         }, 1000);
     }
 
-    var optionMsg=function generate_options(b) {
+    var optionMsg = function generate_options(b) {
         /*what is the weather like in toronto now*/
 
-            generate_message('Did you mean:', 'bot');
+        generate_message('Did you mean:', 'bot');
 
-            var str = "";
-            var i;
-            for (i = 0; i < b.length; i++) {
+        var str = "";
+        var i;
+        for (i = 0; i < b.length; i++) {
             INDEX++;
-            
+
             str = "<div id='cm-msg-" + INDEX + "' class=\"options\">";
             str += "<button class=\"options-btn\" >";
             str += b[i];
             str += "          <\/button>";
             str += "        <\/div>";
-            
-             //send the string to chat-log window
+
+            //send the string to chat-log window
             $(".chat-logs").append(str);
             //message animation to show up on the screen with 500mls delay
             $("#cm-msg-" + INDEX).hide().fadeIn(500);
-             console.log(b[i]);
-            }
-            //choose button option
-            $(".options-btn").click(function(e){
-                e.preventDefault();
-                var btnVal=$(this).html();
-                console.log(btnVal);
-                //show chosen option in the chat logs
-                $(".chat-logs").append(function(){
-               
-                    generate_message(btnVal, 'self');
-                    callbot(btnVal);
-                });
-                });
-        /*b.length=0;*/
-            b=[];
-           
-        
-
+            console.log(b[i]);
         }
+        //choose button option
+        $(".options-btn").click(function (e) {
+            e.preventDefault();
+            var btnVal = $(this).html();
+            console.log(btnVal);
+            //show chosen option in the chat logs
+            $(".chat-logs").append(function () {
+
+                generate_message(btnVal, 'self');
+                callbot(btnVal);
+            });
+        });
+        /*b.length=0;*/
+        b = [];
+
+
+
+    }
 
     function guid() {
 
@@ -241,22 +239,22 @@ $(function () {
     }
 
     /*toggle animations*/
-    $("#chat-circle").click(function() {
+    $("#chat-circle").click(function () {
         $("#chat-circle").hide('scale');
         $(".chat-box").show('scale');
         $(".chat-box-welcome__header").show('scale');
     })
 
-    $(".chat-box-toggle").click(function() {
+    $(".chat-box-toggle").click(function () {
         $("#chat-circle").show('scale');
         $(".chat-box").hide('scale');
         $(".chat-box-welcome__header").hide('scale');
         $("#chat-box__wraper").hide('scale');
-    }) 
-    $(".chat-input__text").click(function() {
+    })
+    $(".chat-input__text").click(function () {
         $(".chat-box-welcome__header").hide();
         $("#chat-box__wraper").show();
     })
-    
+
 
 })

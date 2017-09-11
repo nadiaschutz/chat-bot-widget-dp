@@ -70,10 +70,15 @@ body {
 .options-btn {
     border: 1px solid rgba(246, 72, 72, 1);
 }
-.spiner > * {
+.spiner > *  {
     background: rgba(246, 72, 72, 1);
 }
 
+/*.options-btn:hover{
+   background-image: linear-gradient( to bottom right, rgba(240, 149, 255, 1), rgba(246, 72, 72, 1));
+    
+    color: white;
+}*/
 
 /* ---------- chat-bot-button to open chat---------- */
 
@@ -133,15 +138,6 @@ body {
     box-shadow: 0px 5px 35px 9px #ccc;
 }
 
-.chat-box-welcome__body {
-    position: relative;
-    height: 370px;
-    height: auto;
-    border: 1px solid #ccc;
-    overflow: hidden;
-    border-top-left-radius: 3px;
-    border-top-right-radius: 3px;
-}
 
 .chat-box-welcome__header {
     height: 420px;
@@ -378,6 +374,7 @@ body {
     border-radius: 3px;
     text-align: center;
 }
+
 
 .chat-msg {
     clear: both;
